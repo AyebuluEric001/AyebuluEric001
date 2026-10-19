@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DriveForce Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+  /* Layout: a phone-width card (full-bleed on phones) holding a 3-slide carousel; dots and buttons stay fixed under the slides. */
+  :root {
+    --orange: #FF4D00;
+    --orange-deep: #D93F00;
+    --peach: #FFF1E8;
+    --ink: #1C1C1C;
+    --muted: #8A8A8A;
+    --track: #E7E7E7;
+    --backdrop: #EDEDED;
+    --font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--backdrop); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  button { font: inherit; }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 8px; }
+
+  .app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    height: 100dvh;
+    margin-inline: auto;
+    background: #fff;
+    overflow: hidden;
+  }
+  @media (min-width: 600px) {
+    .app { height: min(900px, calc(100dvh - 48px)); margin-block: 24px; border-radius: 32px; box-shadow: 0 24px 60px rgba(30, 20, 10, .12); }
+  }
+
+  .brand { padding: calc(28px + env(safe-area-inset-top, 0px)) 24px 0; display: flex; justify-content: center; flex: none; position: relative; z-index: 5; }
+  @media (min-width: 600px) { .brand { padding-top: 32px; } }
+  .brand img { height: 38px; width: auto; display: block; }
+
+  .viewport { flex: 1; min-height: 0; overflow: hidden; touch-action: pan-y; margin-top: 8px; }
+  .track { display: flex; width: 300%; height: 100%; transition: transform .45s cubic-bezier(.4, 0, .2, 1); will-change: transform; }
+  .slide { flex: 0 0 33.3333%; min-width: 0; height: 100%; display: flex; flex-direction: column; }
+
+  .art { flex: 1 1 auto; min-height: 0; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; position: relative; }
+  .art > img { display: block; width: 100%; max-height: 100%; object-fit: contain; object-position: center bottom; }
+
+  .copy { flex: none; text-align: center; padding: 18px 28px 0; }
+  h1 { margin: 0; font-size: 27px; line-height: 1.32; font-weight: 500; letter-spacing: -.01em; text-wrap: balance; }
+  .copy p { margin: 14px auto 0; max-width: 21em; font-size: 15px; line-height: 1.6; font-weight: 300; color: var(--muted); text-wrap: balance; }
+
+  /* Slide 2: phone mockup under a white bottom sheet */
+  .art.jobs { background: radial-gradient(ellipse at 70% 40%, var(--peach), #fff 70%); align-items: flex-start; }
+  .phone { position: relative; width: min(68%, 290px); aspect-ratio: 620 / 1260; margin-top: 14px; flex: none; }
+  .phone .frame { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  .phone .screen { position: absolute; z-index: 1; left: 4.6%; right: 4.6%; top: 2.2%; bottom: 2.2%; overflow: hidden; border-radius: 12% / 6%; background: #fff; }
+  .phone .screen img { display: block; width: 100%; height: auto; }
+  .phone { filter: drop-shadow(0 30px 40px rgba(255, 77, 0, .16)); }
+  .jobcard { position: absolute; z-index: 3; left: -10%; right: -10%; top: 29%; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(20, 20, 30, .16); padding: 12px 12px 10px; font-size: 10px; line-height: 1.35; color: #222; text-align: left; }
+  .jobcard .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .jobcard .t { font-size: 11px; font-weight: 500; }
+  .jobcard .amt { color: var(--orange); font-weight: 600; font-size: 11px; margin-top: 2px; }
+  .jobcard .pill { padding: 2px 9px; border-radius: 6px; background: #FFF3DA; color: #E5A01A; border: 1px solid #F8D98F; font-size: 9px; }
+  .jobcard .when { color: #777; font-size: 8.5px; margin-top: 4px; text-align: right; }
+  .jobcard .route { margin-top: 8px; border: 1px solid #ECECEC; border-radius: 8px; padding: 8px 8px 6px; background: #FBFBFB; }
+  .stop { display: grid; grid-template-columns: 14px 1fr; gap: 6px; }
+  .stop + .stop { margin-top: 8px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; display: grid; place-items: center; font-size: 7px; font-weight: 600; color: #fff; margin-top: 1px; }
+  .dot.p { background: #22B14C; }
+  .dot.d { background: var(--orange); }
+  .stop small { display: block; font-size: 8px; }
+  .stop small.p { color: #22B14C; }
+  .stop small.d { color: var(--orange); }
+  .stop b { display: block; font-weight: 500; font-size: 10px; }
+  .stop span { display: block; color: #666; font-size: 8.5px; }
+  .jobcard .view { margin-top: 9px; text-align: center; border: 1px solid var(--orange); color: var(--orange); border-radius: 6px; padding: 5px 0; font-size: 9px; }
+  .slide.sheet .copy { position: relative; z-index: 4; background: #fff; border-radius: 28px 28px 0 0; margin-top: -26px; padding-top: 30px; }
+
+  /* Footer: dots + actions */
+  .foot { flex: none; padding: 18px 16px calc(22px + env(safe-area-inset-bottom, 0px)); position: relative; z-index: 6; background: #fff; }
+  .dots { display: flex; justify-content: center; gap: 4px; margin-bottom: 26px; }
+  .dots button { border: 0; background: none; padding: 10px 0; cursor: pointer; }
+  .dots i { display: block; width: 24px; height: 4px; border-radius: 4px; background: var(--track); transition: background .25s; }
+  .dots button[aria-current="true"] i { background: var(--orange); }
+  .btn { display: flex; align-items: center; justify-content: center; width: 100%; height: 50px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; transition: background .15s, transform .15s; }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--orange); color: #fff; border: 1px solid var(--orange); }
+  .btn.primary:hover { background: var(--orange-deep); border-color: var(--orange-deep); }
+  .btn.secondary { margin-top: 16px; background: #fff; color: var(--orange); border: 1px solid var(--orange); }
+  .btn.secondary:hover { background: var(--peach); }
+
+  .toast { position: absolute; left: 16px; right: 16px; bottom: calc(150px + env(safe-area-inset-bottom, 0px)); z-index: 10; background: #151515; color: #fff; padding: 12px 14px; border-radius: 10px; font-size: 13px; text-align: center; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .2s, transform .2s; }
+  .toast.show { opacity: 1; transform: none; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-height: 700px) {
+    h1 { font-size: 23px; }
+    .copy p { font-size: 14px; margin-top: 8px; }
+    .dots { margin-bottom: 12px; }
+    .btn { height: 46px; }
+    .btn.secondary { margin-top: 10px; }
+    .brand img { height: 30px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .track, .toast, .btn, .dots i { transition: none; } }
+</style>
+</head>
+<body>
+<div class="app" role="region" aria-roledescription="carousel" aria-label="Welcome to DriveForce">
+  <div class="brand"><img src="assets/driveforce-logo.webp" alt="DriveForce" width="520" height="75"></div>
+
+  <div class="viewport" id="viewport">
+    <div class="track" id="track">
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="1 of 3">
+        <div class="art"><img src="assets/rider.webp" alt="A DriveForce rider in an orange jacket on a motorbike with a delivery box, in front of the city skyline" width="900" height="693"></div>
+        <div class="copy">
+          <h1>Deliver. Earn.<br>Stay In Control</h1>
+          <p>Accept delivery jobs, move fast, and earn on your own schedule</p>
+        </div>
+      </section>
+
+      <section class="slide sheet" role="group" aria-roledescription="slide" aria-label="2 of 3">
+        <div class="art jobs">
+          <div class="phone" role="img" aria-label="DriveForce jobs screen showing an assigned instant delivery for ₦2,250.00 from Victoria Island, Lagos to AAJ Express Center">
+            <div class="screen"><img src="assets/jobs-screen.webp" alt="" width="560" height="1137"></div>
+            <img class="frame" src="assets/phone-frame.webp" alt="" width="620" height="1260">
+            <div class="jobcard" aria-hidden="true">
+              <div class="row"><div><div class="t">Instant Delivery</div><div class="amt">₦2,250.00</div></div><div><span class="pill">Assigned</span><div class="when">Today, 9:05 AM</div></div></div>
+              <div class="route">
+                <div class="stop"><span class="dot p">P</span><div><small class="p">Pickup From</small><b>Victoria Island, Lagos</b><span>Mr Adekunle · 0812 345 6789</span></div></div>
+                <div class="stop"><span class="dot d">D</span><div><small class="d">Drop-off</small><b>AAJ Express Center</b><span>Mrs. Hannah Rose · 0812 345 6789</span></div></div>
+              </div>
+              <div class="view">View Details</div>
+            </div>
+          </div>
+        </div>
+        <div class="copy">
+          <h1>Get Jobs Faster</h1>
+          <p>Receive nearby delivery requests and start moving immediately</p>
+        </div>
+      </section>
+
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="3 of 3">
+        <div class="art"><img src="assets/trucks.webp" alt="A phone showing a delivery map beside an orange-and-white van and truck, with parcels and a location pin" width="900" height="580"></div>
+        <div class="copy">
+          <h1>From Small Parcels to<br>Big Jobs</h1>
+          <p>Handle bike, van, or truck deliveries - all from one app</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="dots" role="group" aria-label="Choose a slide">
+      <button type="button" data-go="0" aria-label="Go to slide 1"><i></i></button>
+      <button type="button" data-go="1" aria-label="Go to slide 2"><i></i></button>
+      <button type="button" data-go="2" aria-label="Go to slide 3"><i></i></button>
+    </div>
+    <button class="btn primary" id="primaryBtn" type="button">Continue</button>
+    <button class="btn secondary" id="secondaryBtn" type="button">Skip</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="sr" id="live" aria-live="polite"></div>
+</div>
+
+<script>
+/* ---------- Configuration: fill in before launch ---------- */
+var CONFIG = {
+  getStartedUrl: "",  // TODO: rider registration page. Blank = Get Started shows a "not connected" message.
+  loginUrl: "../"     // The login page in the parent folder
+};
+
+var COUNT = 3, index = 0;
+var track = document.getElementById("track"), viewport = document.getElementById("viewport");
+var slides = track.querySelectorAll(".slide");
+var dots = document.querySelectorAll(".dots button");
+var primary = document.getElementById("primaryBtn"), secondary = document.getElementById("secondaryBtn");
+var toastEl = document.getElementById("toast"), live = document.getElementById("live"), toastTimer;
+
+function toast(msg) {
+  toastEl.textContent = msg; toastEl.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 3000);
+}
+
+function go(i, announce) {
+  index = Math.max(0, Math.min(COUNT - 1, i));
+  track.style.transform = "translateX(" + (-index * 100 / COUNT) + "%)";
+  slides.forEach(function (s, n) { if (n === index) { s.removeAttribute("aria-hidden"); s.removeAttribute("inert"); } else { s.setAttribute("aria-hidden", "true"); s.setAttribute("inert", ""); } });
+  dots.forEach(function (d, n) { d.setAttribute("aria-current", n === index ? "true" : "false"); });
+  var last = index === COUNT - 1;
+  primary.textContent = last ? "Get Started" : "Continue";
+  secondary.textContent = last ? "Login" : "Skip";
+  if (announce) live.textContent = "Slide " + (index + 1) + " of " + COUNT;
+}
+
+primary.addEventListener("click", function () {
+  if (index < COUNT - 1) { go(index + 1, true); return; }
+  if (CONFIG.getStartedUrl) location.href = CONFIG.getStartedUrl;
+  else toast("Registration has not been connected yet.");
+});
+secondary.addEventListener("click", function () {
+  if (index < COUNT - 1) { go(COUNT - 1, true); return; }
+  location.href = CONFIG.loginUrl;
+});
+dots.forEach(function (d) { d.addEventListener("click", function () { go(Number(d.getAttribute("data-go")), true); }); });
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "ArrowRight") go(index + 1, true);
+  if (e.key === "ArrowLeft") go(index - 1, true);
+});
+
+/* Swipe */
+var startX = null, startY = null;
+viewport.addEventListener("pointerdown", function (e) { startX = e.clientX; startY = e.clientY; });
+viewport.addEventListener("pointerup", function (e) {
+  if (startX === null) return;
+  var dx = e.clientX - startX, dy = e.clientY - startY;
+  startX = null;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(index + (dx < 0 ? 1 : -1), true);
+});
+viewport.addEventListener("pointercancel", function () { startX = null; });
+
+go(0, false);
+</script>
+</body>
+</html>
