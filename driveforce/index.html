@@ -1,0 +1,566 @@
+<title>DriveForce Rider</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: warm cream page, orange accents, one full-bleed navy band, tilted brand ribbon in hero.
+   Single committed brand look (light page + navy sections), so no dark-mode redefinition. */
+:root {
+  --orange: #FF4D00;
+  --orange-deep: #D93F00;
+  --navy: #101A2A;
+  --navy-2: #182438;
+  --cream: #FCF8F3;
+  --peach: #FFE9DC;
+  --card: #FFFFFF;
+  --ink: #0F1522;
+  --muted: #5B6472;
+  --line: #EEE3D7;
+  --on-navy: #FFFFFF;
+  --on-navy-muted: #AEB6C4;
+  --font: "Urbanist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--cream); z-index: 60; }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { text-wrap: balance; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 6px; }
+.band-navy :focus-visible { outline-color: #fff; }
+.inner { width: 100%; max-width: 1240px; margin-inline: auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+section[id] { scroll-margin-top: 84px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--orange); }
+.h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.12; font-weight: 600; letter-spacing: -.01em; margin-top: 10px; }
+.sec { padding-block: clamp(56px, 8vw, 96px); }
+
+/* Header */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: rgba(252,248,243,.94); backdrop-filter: blur(8px); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 72px; }
+.wordmark { font-weight: 800; font-style: italic; font-size: 26px; letter-spacing: -.02em; color: var(--orange); display: inline-flex; align-items: center; gap: 4px; }
+.wordmark svg { width: 18px; height: 16px; flex: none; }
+.nav { display: flex; gap: clamp(16px, 3vw, 40px); font-size: 14px; font-weight: 500; color: #3B4352; }
+.nav a { padding: 8px 2px; border-bottom: 2px solid transparent; }
+.nav a:hover { color: var(--orange); }
+.auth { display: flex; gap: 12px; align-items: center; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 28px; border-radius: 8px; font-weight: 600; font-size: 14px; border: 1.5px solid var(--orange); transition: background .2s, color .2s, transform .2s; }
+.btn-ghost { color: var(--orange); background: transparent; }
+.btn-ghost:hover { background: var(--peach); }
+.btn-solid { background: var(--orange); color: #fff; }
+.btn-solid:hover { background: var(--orange-deep); border-color: var(--orange-deep); }
+.menu-toggle { display: none; width: 44px; height: 44px; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; align-items: center; justify-content: center; }
+.menu-toggle svg { width: 22px; height: 22px; }
+.mobile-menu { display: none; padding-bottom: 16px; }
+.mobile-menu a.m-link { display: block; padding: 14px 4px; border-top: 1px solid var(--line); font-weight: 600; }
+.mobile-menu .auth { margin-top: 12px; }
+.mobile-menu .auth .btn { flex: 1; }
+@media (max-width: 860px) {
+  .nav, .bar > .auth { display: none; }
+  .menu-toggle { display: inline-flex; }
+  .mobile-menu.open { display: block; }
+}
+
+/* Store badges */
+.stores { display: flex; flex-wrap: wrap; gap: 12px; }
+.store { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 16px 6px 12px; border-radius: 10px; background: #0B0F18; color: #fff; border: 1px solid #2B3344; box-shadow: 0 6px 16px rgba(16,26,42,.25); transition: transform .2s; }
+.store:hover { transform: translateY(-2px); }
+.store svg { width: 24px; height: 24px; flex: none; }
+.store small { display: block; font-size: 9px; line-height: 1.1; letter-spacing: .02em; opacity: .85; }
+.store b { display: block; font-size: 15px; line-height: 1.15; font-weight: 600; }
+
+/* Hero */
+.hero { padding-top: clamp(24px, 4vw, 48px); padding-bottom: clamp(48px, 7vw, 88px); background: linear-gradient(180deg, #FCEFE4 0%, var(--cream) 100%); }
+.hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: center; }
+.badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: 13px; font-weight: 500; color: var(--orange-deep); }
+.badge svg { width: 20px; height: 20px; }
+.hero h1 { font-size: clamp(36px, 5.4vw, 58px); line-height: 1.08; font-weight: 600; letter-spacing: -.02em; margin-top: 20px; max-width: 12.5em; }
+.hero p.lead { margin-top: 18px; max-width: 30em; color: var(--muted); font-size: 16px; }
+.rating { margin-top: 16px; display: flex; gap: 8px; align-items: center; font-size: 13px; color: #3B4352; }
+.rating .stars { color: #F5A524; letter-spacing: 2px; font-size: 16px; }
+.hero .stores { margin-top: 24px; }
+.ribbon { position: relative; height: 150px; margin-top: 28px; max-width: 520px; }
+.ribbon i { position: absolute; display: flex; align-items: center; gap: 10px; height: 44px; padding-inline: 20px; font-style: normal; font-size: 10px; font-weight: 600; color: #fff; white-space: nowrap; transform-origin: left center; }
+.ribbon .r1 { left: 0; top: 96px; width: 330px; background: #0B0F18; transform: rotate(-24deg); }
+.ribbon .r2 { left: 150px; top: 64px; width: 300px; background: #0B0F18; transform: rotate(-24deg); border-left: 3px solid var(--orange); }
+.ribbon .r3 { left: 150px; top: 112px; width: 200px; background: var(--orange); transform: rotate(0deg); color: #fff; justify-content: center; border-radius: 0 0 10px 0; }
+.hero-art { position: relative; border-radius: 28px; background: linear-gradient(160deg, #FF6A1F, #FF4D00 55%, #E63F00); aspect-ratio: 1 / 1.02; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.hero-art::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 15%, rgba(255,255,255,.22), transparent 45%); }
+.hero-art .phone { width: 46%; transform: rotate(-3deg) translateY(4%); }
+.hand { position: absolute; bottom: -6%; left: 50%; width: 30%; height: 38%; transform: translateX(-30%) rotate(-3deg); background: linear-gradient(90deg, #8A5A44, #A56C52); border-radius: 40% 40% 12% 12% / 60% 60% 0 0; z-index: 0; }
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-art { aspect-ratio: 1 / .9; }
+  .hero-art .phone { width: min(52%, 230px); }
+  .ribbon { display: none; }
+}
+
+/* Phone component, sized in container units */
+.phone { container-type: inline-size; position: relative; z-index: 1; aspect-ratio: 9 / 18.6; background: #fff; border: 7px solid #0E131C; border-radius: 15cqw; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,.28); }
+.phone .notch { position: absolute; top: 2.6cqw; left: 50%; transform: translateX(-50%); width: 32cqw; height: 7cqw; background: #0E131C; border-radius: 999px; z-index: 3; }
+.phone .status { position: absolute; top: 3cqw; left: 8cqw; right: 8cqw; display: flex; justify-content: space-between; font-size: 4.2cqw; font-weight: 700; z-index: 2; }
+.screen { position: absolute; inset: 0; padding: 14cqw 6cqw 6cqw; font-size: 4cqw; }
+.screen.orange { background: var(--orange); color: #fff; padding: 0; display: flex; align-items: center; justify-content: center; }
+.screen.orange .wordmark { color: #fff; font-size: 13cqw; }
+.screen.orange .wordmark svg { width: 9cqw; height: 8cqw; }
+.dash-hi { display: flex; align-items: center; gap: 2.5cqw; font-weight: 700; font-size: 4.4cqw; }
+.dash-hi i { width: 8cqw; height: 8cqw; border-radius: 50%; background: #E3B7A0; display: block; }
+.dash-hi span { font-size: 3cqw; font-weight: 500; color: #7A828F; display: block; }
+.dash-tabs { display: grid; grid-template-columns: 1fr 1fr; margin-top: 4cqw; font-size: 3.2cqw; text-align: center; color: #7A828F; border-bottom: .4cqw solid #EEE; }
+.dash-tabs b { color: var(--ink); border-bottom: .7cqw solid var(--orange); padding-bottom: 1.5cqw; }
+.dash-card { margin-top: 4cqw; background: var(--orange); color: #fff; border-radius: 3cqw; padding: 4cqw; }
+.dash-card small { display: block; font-size: 3cqw; opacity: .9; }
+.dash-card strong { display: block; font-size: 7cqw; margin-block: 1cqw 3cqw; }
+.dash-card .pill { display: inline-block; padding: 1.4cqw 5cqw; border-radius: 1.5cqw; background: #fff; color: var(--orange); font-size: 3cqw; font-weight: 700; }
+.dash-bonus { margin-top: 3cqw; border: .4cqw solid #F3E6DA; border-radius: 3cqw; padding: 3cqw; font-size: 3cqw; }
+.dash-bonus .bar-bg { height: 1.6cqw; background: #F3E6DA; border-radius: 99px; margin-top: 2cqw; }
+.dash-bonus .bar-bg i { display: block; height: 100%; width: 80%; background: var(--orange); border-radius: 99px; }
+.dash-grid { margin-top: 3cqw; display: grid; grid-template-columns: 1fr 1fr; gap: 2cqw; font-size: 2.8cqw; color: #7A828F; }
+.dash-grid div { border: .4cqw solid #F0E6DC; border-radius: 2.5cqw; padding: 2.5cqw; }
+.dash-grid b { display: block; color: var(--ink); font-size: 3.8cqw; }
+
+/* How it works */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 440px; overflow: hidden; }
+.step h3 { font-size: 20px; font-weight: 600; }
+.step p { color: var(--muted); font-size: 14px; max-width: 26em; }
+.step .visual { flex: 1; display: flex; align-items: center; justify-content: center; margin-top: 12px; position: relative; min-height: 220px; }
+.tilt-stores { display: flex; flex-direction: column; gap: 14px; transform: rotate(-8deg); }
+.tilt-stores .store { transform: none; padding: 10px 22px 10px 16px; min-height: 60px; }
+.tilt-stores .store svg { width: 30px; height: 30px; }
+.tilt-stores .store b { font-size: 18px; }
+.step .phone-sm { width: min(72%, 230px); margin-bottom: -48%; align-self: flex-end; }
+.step .phone-sm .form { padding: 22cqw 8cqw 0; }
+.form .lbl { font-size: 3.6cqw; font-weight: 700; margin-top: 3cqw; }
+.form .sub { font-size: 2.8cqw; color: #8A919D; }
+.form .fld { margin-top: 2cqw; border: .4cqw solid #E7E1DA; border-radius: 2cqw; padding: 2.6cqw 3cqw; font-size: 2.8cqw; color: #A2A8B1; }
+.form-top { background: var(--orange); position: absolute; inset: 0 0 auto 0; height: 30%; display: flex; align-items: center; justify-content: center; padding-top: 6cqw; }
+.form-top .wordmark { color: #fff; font-size: 9cqw; }
+.form-top .wordmark svg { width: 6cqw; height: 5cqw; }
+.form-sheet { position: absolute; inset: 27% 0 0 0; background: #fff; border-radius: 6cqw 6cqw 0 0; padding: 6cqw; }
+@media (max-width: 960px) { .steps { grid-template-columns: 1fr; } .step { min-height: 0; } .step .visual { min-height: 200px; } }
+
+/* Why */
+.band-navy { background: var(--navy); color: var(--on-navy); position: relative; overflow: hidden; }
+.band-navy::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(ellipse at 50% 60%, #000 0%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at 50% 60%, #000 0%, transparent 75%); }
+.band-navy .inner { position: relative; }
+.band-navy .lead { margin-top: 16px; color: var(--on-navy-muted); max-width: 36em; }
+.why-grid { display: grid; grid-template-columns: 1fr minmax(240px, 300px) 1fr; gap: clamp(24px, 5vw, 72px); align-items: center; margin-top: 56px; }
+.why-col { display: flex; flex-direction: column; gap: 44px; }
+.why-col.right { }
+.benefit { display: flex; gap: 14px; align-items: flex-start; }
+.benefit .ico { flex: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid #2E3B52; background: var(--navy-2); display: flex; align-items: center; justify-content: center; color: var(--orange); }
+.benefit .ico svg { width: 20px; height: 20px; }
+.benefit h3 { font-size: 16px; font-weight: 600; }
+.benefit p { margin-top: 4px; font-size: 13px; color: var(--on-navy-muted); max-width: 22em; }
+.why-phone { order: 0; }
+.why-phone .phone { border-color: #E9E4DE; box-shadow: 0 0 0 1px #33415A, 0 0 70px rgba(255,77,0,.18); }
+@media (max-width: 900px) {
+  .why-grid { grid-template-columns: 1fr; gap: 32px; }
+  .why-phone { order: -1; width: min(260px, 70%); margin-inline: auto; }
+  .why-col { gap: 28px; }
+}
+
+/* Requirements */
+.req-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(24px, 5vw, 64px); align-items: center; margin-top: 36px; }
+.req-list { display: flex; flex-direction: column; gap: 6px; }
+.req { text-align: left; display: block; width: 100%; background: transparent; border: 0; border-left: 3px solid transparent; border-radius: 4px; padding: 20px 22px; transition: background .25s, border-color .25s; }
+.req .t { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; }
+.req .t svg { width: 20px; height: 20px; color: var(--muted); }
+.req p { margin-top: 10px; color: var(--muted); font-size: 14px; max-width: 30em; }
+.req[aria-selected="true"] { background: var(--peach); border-left-color: var(--orange); }
+.req[aria-selected="true"] .t svg { color: var(--orange); }
+.req-art { border-radius: 24px; background: linear-gradient(135deg, #FFF4EC, #FFDCC6); aspect-ratio: 1.15 / 1; display: flex; justify-content: center; align-items: flex-end; overflow: hidden; position: relative; padding-top: 6%; }
+.req-art .phone { width: 38%; border-bottom: 0; border-radius: 15cqw 15cqw 0 0; box-shadow: none; }
+.req-art .phone .screen { padding: 16cqw 7cqw 0; }
+.up-card { position: absolute; left: 8%; right: 8%; bottom: 14%; background: #fff; border-radius: 14px; box-shadow: 0 18px 40px rgba(90,40,10,.18); padding: 18px 20px; z-index: 2; }
+.up-card h4 { margin: 0; font-size: 15px; font-weight: 600; }
+.up-card .hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.up-drop { margin-top: 12px; border: 1.5px dashed #E6D6C8; border-radius: 10px; padding: 16px 10px; text-align: center; font-size: 12px; color: var(--muted); }
+.up-drop svg { width: 22px; height: 22px; color: var(--orange); display: block; margin: 0 auto 6px; }
+.up-drop b { color: var(--orange); font-weight: 600; }
+.phone .ph-field { font-size: 3.4cqw; color: #A2A8B1; border-bottom: .4cqw solid #EEE; padding: 3cqw 0; }
+@media (max-width: 860px) { .req-grid { grid-template-columns: 1fr; } .req-art { aspect-ratio: 1 / .95; } .req-art .phone { width: 46%; } }
+
+/* FAQ */
+.faq-wrap { max-width: 860px; margin-inline: auto; }
+.faq-head { text-align: center; }
+.faq-list { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+.qa { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 6px 20px rgba(90,60,30,.05); }
+.qa button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left; background: none; border: 0; padding: 22px 26px; font-weight: 600; font-size: 16px; border-radius: 14px; }
+.qa .pm { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1px solid #D8CFC4; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); }
+.qa .pm svg { width: 12px; height: 12px; }
+.qa .pm .v { transition: transform .25s, opacity .25s; transform-origin: center; }
+.qa button[aria-expanded="true"] .pm .v { transform: scaleY(0); opacity: 0; }
+.ans { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.ans > div { overflow: hidden; }
+.ans p { padding: 0 26px 24px; color: var(--muted); font-size: 14px; max-width: 46em; }
+.ans p em { color: var(--orange-deep); font-style: normal; font-weight: 600; font-size: 12px; margin-right: 6px; }
+.qa.open .ans { grid-template-rows: 1fr; }
+
+/* CTA */
+.cta { border-radius: 28px; background: linear-gradient(100deg, #FFE7D6 0%, #FFD2B5 60%, #FFC09A 100%); position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; align-items: center; min-height: 320px; }
+.cta-copy { padding: clamp(28px, 5vw, 56px); position: relative; z-index: 2; }
+.cta h2 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 600; line-height: 1.1; margin-top: 16px; }
+.cta p { margin-top: 14px; color: #4A4F5B; max-width: 28em; font-size: 15px; }
+.cta .stores { margin-top: 24px; }
+.cta-art { position: relative; align-self: stretch; min-height: 260px; }
+.cta-art svg { position: absolute; right: 0; bottom: 0; width: 100%; height: 100%; }
+@media (max-width: 760px) { .cta { grid-template-columns: 1fr; } .cta-art { min-height: 220px; } }
+
+/* Footer */
+.footer { background: var(--navy); color: #fff; text-align: center; padding-block: 56px 36px; }
+.footer .wordmark { font-size: 30px; }
+.footer p.about { margin: 20px auto 0; max-width: 30em; color: var(--on-navy-muted); font-size: 14px; }
+.foot-nav { margin-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 28px; font-size: 13px; color: #D2D8E2; }
+.foot-nav a { padding: 6px 2px; }
+.foot-nav a:hover { color: var(--orange); }
+.legal { margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; font-size: 12px; color: var(--on-navy-muted); }
+.copy { margin-top: 36px; padding-top: 24px; border-top: 1px solid #243149; font-size: 12px; color: var(--on-navy-muted); }
+
+/* Toast */
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: #0B0F18; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 80; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+</style>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="bar">
+      <a href="#top" class="wordmark" aria-label="DriveForce home">
+        <svg viewBox="0 0 18 16" fill="none" aria-hidden="true"><path d="M0 3h12M3 8h13M0 13h10" stroke="#FF4D00" stroke-width="2.4" stroke-linecap="round"/></svg>DriveForce
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#why">Why DriveForce</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="auth">
+        <a class="btn btn-ghost" data-link="login" href="#">Login</a>
+        <a class="btn btn-solid" data-link="signup" href="#">Sign Up</a>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="menuIcon" d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="#how-it-works">How It Works</a>
+      <a class="m-link" href="#why">Why DriveForce</a>
+      <a class="m-link" href="#requirements">Requirements</a>
+      <a class="m-link" href="#faq">FAQ</a>
+      <div class="auth">
+        <a class="btn btn-ghost" data-link="login" href="#">Login</a>
+        <a class="btn btn-solid" data-link="signup" href="#">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="inner hero-grid">
+      <div>
+        <span class="badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FF4D00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6M6 14l3-6h4l3 6M13 8l2-3h3"/></svg>
+          Turn Every Ride Into Real Earnings
+        </span>
+        <h1 id="hero-title">Ride. Deliver. Earn On Your Terms Instantly</h1>
+        <p class="lead">Join DriveForce and start earning by delivering packages with a reliable and flexible rider network built for speed and trust.</p>
+        <div class="rating" id="rating" hidden><span class="stars" aria-hidden="true">★★★★★</span><span id="ratingText"></span></div>
+        <div class="stores" data-stores></div>
+        <div class="ribbon" aria-hidden="true">
+          <i class="r1">Satisfaction Guarantee &nbsp;·&nbsp; Your Experience Is Our Top Priority</i>
+          <i class="r2">Transparent Earnings &nbsp;·&nbsp; See Exactly What You Earn</i>
+          <i class="r3">Realistic, Timely Service</i>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="hand" aria-hidden="true"></div>
+        <div class="phone" role="img" aria-label="DriveForce rider app dashboard showing balance and completed jobs">
+          <div class="notch"></div><div class="status"><span>9:41</span><span></span></div>
+          <div class="screen">
+            <div class="dash-hi"><i></i><div>Hello, John<span>Let's get you on the road</span></div></div>
+            <div class="dash-tabs"><b>Dashboard</b><span>Earnings Overview</span></div>
+            <div class="dash-card"><small>Active Balance</small><strong>₦2,901,058</strong><span class="pill">Withdraw</span></div>
+            <div class="dash-bonus">Today's Bonus Progress<div class="bar-bg"><i></i></div></div>
+            <div class="dash-grid">
+              <div>Total Earned<b>₦12,000</b></div><div>Completed Jobs<b>5</b></div>
+              <div>Total Jobs Assigned<b>4</b></div><div>Rejected Deliveries<b>1</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="how-it-works" aria-labelledby="how-title">
+    <div class="inner">
+      <p class="eyebrow">Get started in minutes</p>
+      <h2 class="h2" id="how-title">How <span style="color:var(--orange)">DriveForce</span> Works</h2>
+      <div class="steps">
+        <article class="step">
+          <h3>Download the App</h3>
+          <p>Log in to the DriveForce app to start receiving delivery jobs.</p>
+          <div class="visual"><div class="tilt-stores" data-stores="stack"></div></div>
+        </article>
+        <article class="step">
+          <h3>Sign Up</h3>
+          <p>Create your rider account and submit the required details in minutes.</p>
+          <div class="visual" style="align-items:flex-end;">
+            <div class="phone phone-sm" role="img" aria-label="Create your account screen">
+              <div class="notch"></div>
+              <div class="form-top"><span class="wordmark">DriveForce</span></div>
+              <div class="form-sheet form">
+                <div class="lbl">Create your Account</div>
+                <div class="sub">Enter your details to create an account</div>
+                <div class="lbl">First Name</div><div class="fld">Enter your first name</div>
+                <div class="lbl">Last Name</div><div class="fld">Enter your last name</div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="step">
+          <h3>Get Verified &amp; Start Earning</h3>
+          <p>Get approved, deliver, track earnings, and withdraw directly to your bank.</p>
+          <div class="visual">
+            <svg viewBox="0 0 300 240" width="100%" style="max-width:300px" role="img" aria-label="Verified ID card and stacked coins">
+              <defs><linearGradient id="gold" x1="0" x2="1"><stop offset="0" stop-color="#E9A416"/><stop offset=".5" stop-color="#FFD86B"/><stop offset="1" stop-color="#E09A10"/></linearGradient></defs>
+              <g transform="rotate(-8 170 80)"><rect x="70" y="30" width="190" height="120" rx="14" fill="#DCEBFF"/><rect x="70" y="30" width="190" height="120" rx="14" fill="none" stroke="#8DB8F5" stroke-width="3"/>
+                <circle cx="115" cy="75" r="16" fill="#2F7DF0"/><path d="M90 118c4-18 42-18 50 0z" fill="#2F7DF0"/>
+                <rect x="150" y="62" width="90" height="9" rx="4" fill="#fff"/><rect x="150" y="82" width="70" height="9" rx="4" fill="#fff"/><rect x="150" y="102" width="80" height="9" rx="4" fill="#fff"/></g>
+              <circle cx="238" cy="150" r="26" fill="#23B15D"/><path d="M226 150l9 9 16-18" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <g><ellipse cx="70" cy="214" rx="62" ry="18" fill="url(#gold)"/><ellipse cx="70" cy="204" rx="62" ry="18" fill="#FFD86B"/><ellipse cx="70" cy="192" rx="62" ry="18" fill="url(#gold)"/><ellipse cx="70" cy="180" rx="62" ry="18" fill="#FFD86B"/><ellipse cx="70" cy="168" rx="62" ry="18" fill="url(#gold)"/>
+              <ellipse cx="70" cy="166" rx="40" ry="10" fill="#F4B92C"/></g>
+            </svg>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band-navy" id="why" aria-labelledby="why-title">
+    <div class="inner">
+      <p class="eyebrow">Why choose us</p>
+      <h2 class="h2" id="why-title">Why Ride With DriveForce</h2>
+      <p class="lead">DriveForce is built around you. Enjoy flexible hours, transparent earnings, and consistent delivery opportunities, all in one reliable platform.</p>
+      <div class="why-grid">
+        <div class="why-col">
+          <div class="benefit"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div><h3>Flexible Schedule</h3><p>Ride when you want, on a schedule that works for you.</p></div></div>
+          <div class="benefit"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="5" height="6" rx="2"/><rect x="17" y="14" width="5" height="6" rx="2"/></svg></span><div><h3>Reliable Support</h3><p>Quick, reliable support whenever you need help.</p></div></div>
+          <div class="benefit"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span><div><h3>Easy To Use App</h3><p>Accept rides, track routes, and manage earnings easily.</p></div></div>
+        </div>
+        <div class="why-phone">
+          <div class="phone" role="img" aria-label="DriveForce app splash screen"><div class="notch"></div><div class="status" style="color:#fff"><span>9:41</span><span></span></div>
+            <div class="screen orange"><span class="wordmark"><svg viewBox="0 0 18 16" fill="none" aria-hidden="true"><path d="M0 3h12M3 8h13M0 13h10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>DriveForce</span></div>
+          </div>
+        </div>
+        <div class="why-col right">
+          <div class="benefit"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span><div><h3>Transparent Earnings</h3><p>No hidden charges. Track every delivery and payout.</p></div></div>
+          <div class="benefit"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 6V4a2 2 0 0 0-2-2H6M2 11h20M16 15h2"/></svg></span><div><h3>Fast Payments</h3><p>Get paid quickly after completed deliveries.</p></div></div>
+          <div class="benefit"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><h3>Secure Platform</h3><p>Built with safety and trust in mind.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="requirements" aria-labelledby="req-title">
+    <div class="inner">
+      <p class="eyebrow">Requirements</p>
+      <h2 class="h2" id="req-title">What You Need To Get Started</h2>
+      <div class="req-grid">
+        <div class="req-list" role="tablist" aria-label="Rider requirements" aria-orientation="vertical" id="reqList"></div>
+        <div class="req-art" aria-live="polite">
+          <div class="up-card">
+            <h4 id="upTitle"></h4><div class="hint" id="upHint"></div>
+            <div class="up-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>Drag &amp; drop your image <b>choose file</b></div>
+          </div>
+          <div class="phone" aria-hidden="true"><div class="notch"></div><div class="screen"><div class="ph-field" id="phField1"></div><div class="ph-field" id="phField2">Upload Image</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="faq" aria-labelledby="faq-title" style="padding-top:0">
+    <div class="inner">
+      <div class="faq-wrap">
+        <div class="faq-head"><p class="eyebrow">FAQ</p><h2 class="h2" id="faq-title">Frequently Asked Questions</h2></div>
+        <div class="faq-list" id="faqList"></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom: clamp(48px, 7vw, 88px)" aria-labelledby="cta-title">
+    <div class="inner">
+      <div class="cta">
+        <div class="cta-copy">
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="#FF4D00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6M6 14l3-6h4l3 6M13 8l2-3h3"/></svg>DriveForce Rider App</span>
+          <h2 id="cta-title">Built For Riders On The Move</h2>
+          <p>A powerful rider app designed to help you accept deliveries, track routes, and earn with confidence right from your phone.</p>
+          <div class="stores" data-stores></div>
+        </div>
+        <div class="cta-art" aria-hidden="true">
+          <svg viewBox="0 0 460 320" preserveAspectRatio="xMaxYMax meet" fill="none">
+            <g fill="#F6A878" opacity=".55"><rect x="20" y="150" width="34" height="140"/><rect x="62" y="110" width="44" height="180"/><rect x="114" y="140" width="30" height="150"/><rect x="152" y="90" width="48" height="200"/><rect x="208" y="130" width="36" height="160"/></g>
+            <g fill="#FF4D00"><path d="M330 28c-10 0-18 8-18 18 0 14 18 32 18 32s18-18 18-32c0-10-8-18-18-18z"/><circle cx="330" cy="46" r="6" fill="#fff"/></g>
+            <g fill="#FF4D00" opacity=".9"><path d="M170 56c-7 0-12 5-12 12 0 9 12 21 12 21s12-12 12-21c0-7-5-12-12-12z"/><circle cx="170" cy="68" r="4" fill="#fff"/></g>
+            <path d="M0 292 L460 262 V320 H0Z" fill="#3A3F4B"/><path d="M10 300 L450 272" stroke="#fff" stroke-width="3" stroke-dasharray="26 22" opacity=".7"/>
+            <g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M210 232h40M200 250h50M215 214h30"/></g>
+            <circle cx="290" cy="264" r="30" fill="#1B1F29" stroke="#0B0F18" stroke-width="6"/><circle cx="290" cy="264" r="12" fill="#6B7280"/>
+            <circle cx="410" cy="258" r="30" fill="#1B1F29" stroke="#0B0F18" stroke-width="6"/><circle cx="410" cy="258" r="12" fill="#6B7280"/>
+            <path d="M290 264l38-48h42l40 42M330 216l-8-26h22" stroke="#0B0F18" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M318 214h56l14 30h-64z" fill="#FF4D00"/>
+            <rect x="262" y="150" width="70" height="62" rx="8" fill="#FF4D00"/><text x="297" y="192" fill="#fff" font-family="Urbanist,sans-serif" font-weight="800" font-size="30" text-anchor="middle">D</text>
+            <path d="M330 150l20 4 16 42-30 8z" fill="#FF6A1F"/><circle cx="366" cy="132" r="17" fill="#2A2F3B"/><path d="M352 130h28v10a14 14 0 0 1-28 0z" fill="#101A2A"/>
+            <path d="M360 190l24 22 6 42" stroke="#16202F" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="inner">
+    <a href="#top" class="wordmark" aria-label="DriveForce"><svg viewBox="0 0 18 16" fill="none" aria-hidden="true" style="width:20px;height:18px"><path d="M0 3h12M3 8h13M0 13h10" stroke="#FF4D00" stroke-width="2.4" stroke-linecap="round"/></svg>DriveForce</a>
+    <p class="about">Built for riders, powered by technology, and committed to creating better delivery experiences for everyone.</p>
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="#how-it-works">How It Works</a><a href="#why">Why DriveForce</a><a href="#requirements">Requirements</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="legal"><a data-link="privacy" href="#">Privacy Policy</a><a data-link="terms" href="#">Terms and Conditions</a></div>
+    <p class="copy">© <span id="year">2026</span> DriveForce. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Site configuration: fill these in before launch ---------- */
+var CONFIG = {
+  stores: { googlePlay: "", appStore: "" },           // TODO: real store URLs
+  links:  { login: "", signup: "", privacy: "", terms: "" }, // TODO: real routes / pages
+  rating: { value: "5.0", count: "20+" }               // taken from the design reference; confirm or set to null
+};
+var LINK_LABELS = { googlePlay: "Google Play link", appStore: "App Store link", login: "Login page", signup: "Sign Up page", privacy: "Privacy Policy page", terms: "Terms page" };
+
+var REQUIREMENTS = [
+  { id: "license", title: "A Driver's License", icon: "M3 7h18v10H3zM7 11h4M7 14h6M16 11h2", text: "To become a DriveForce rider, you need a valid government issued driver's license to show you're qualified to drive safely.", up: "Driver's License", hint: "Government issued, valid and not expired", f1: "License number" },
+  { id: "photo", title: "Passport Photograph", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-5 15-5 16 0", text: "To complete your registration, you'll need a recent passport photo for identification and verification.", up: "Your Photograph", hint: "A recent passport photo of you", f1: "Passport photograph" },
+  { id: "nin", title: "Valid NIN Number", icon: "M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6zM9 12l2 2 4-4", text: "Enter your valid NIN number to verify your identity and complete your registration securely.", up: "Valid ID", hint: "NIN slip, driver license, permit ID or voter's card", f1: "NIN" }
+];
+
+var FAQS = [
+  { q: "How long does verification take?", a: "Verification is usually quick once all documents are submitted correctly. Most riders hear back within a couple of days." },
+  { q: "When do riders get paid?", a: "Payments are processed regularly and can be tracked in the app at any time, so you always know what's coming." },
+  { q: "Can I ride part-time?", a: "Yes, you choose your hours. Ride full-time or part-time, whichever suits your schedule." },
+  { q: "Is there a registration fee?", draft: true, a: "Registration fee details will be confirmed by the DriveForce team before launch." },
+  { q: "What areas does DriveForce operate in?", draft: true, a: "Service areas will be confirmed by the DriveForce team before launch." },
+  { q: "What documents are required for registration?", a: "You will need a valid driver's license, a recent passport photograph and a valid NIN number." },
+  { q: "What if I face an issue during a delivery?", draft: true, a: "Support and delivery-issue steps will be confirmed by the DriveForce team before launch." }
+];
+
+/* ---------- Helpers ---------- */
+var toastEl = document.getElementById("toast"), toastTimer;
+function toast(msg) {
+  toastEl.textContent = msg; toastEl.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 3200);
+}
+function unset(key) { toast(LINK_LABELS[key] + " has not been configured yet."); }
+
+/* Store badges */
+var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2.5v19l10-9.5z" fill="#00C4FF"/><path d="M4 2.5l10 9.5 3.4-3.4L6.2 2.2c-.7-.4-1.7-.2-2.2.3z" fill="#00E676"/><path d="M4 21.5l10-9.5 3.4 3.4-11.2 6.4c-.7.4-1.7.2-2.2-.3z" fill="#FF3A44"/><path d="M17.4 8.6L21 10.7c1 .6 1 1.9 0 2.5l-3.6 2.1L14 12z" fill="#FFC400"/></svg>';
+var APPLE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.600-2.800-1.800-3.400-1.800-1.400-.1-2.800.9-3.500.9-.7 0-1.900-.8-3.100-.8-1.600 0-3.100.9-3.900 2.400-1.700 2.900-.4 7.200 1.200 9.600.8 1.200 1.800 2.500 3 2.400 1.200 0 1.700-.8 3.100-.8s1.900.8 3.200.8c1.300 0 2.100-1.200 2.900-2.300.9-1.300 1.300-2.600 1.300-2.700 0 0-2.800-1.100-2.800-4.200zM14.100 5.700c.6-.8 1.100-1.900.9-3-.9 0-2.100.6-2.700 1.400-.6.700-1.100 1.800-1 2.900 1.100.1 2.200-.5 2.800-1.300z"/></svg>';
+function badge(key, svg, small, big) {
+  return '<a class="store" data-link="' + key + '" href="#" rel="noopener">' + svg + '<span><small>' + small + '</small><b>' + big + '</b></span></a>';
+}
+document.querySelectorAll("[data-stores]").forEach(function (el) {
+  el.innerHTML = badge("googlePlay", PLAY, "Get it on", "Google Play") + badge("appStore", APPLE, "Download on the", "App Store");
+});
+
+/* Wire configured links; unconfigured ones tell the viewer instead of doing nothing */
+document.querySelectorAll("[data-link]").forEach(function (a) {
+  var key = a.getAttribute("data-link");
+  var url = CONFIG.stores[key] || CONFIG.links[key];
+  if (url) {
+    a.href = url;
+    if (/^https?:/i.test(url)) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+  } else {
+    a.addEventListener("click", function (e) { e.preventDefault(); unset(key); });
+  }
+});
+
+/* Rating only when configured */
+if (CONFIG.rating) {
+  document.getElementById("ratingText").textContent = CONFIG.rating.value + " (from " + CONFIG.rating.count + " reviews)";
+  document.getElementById("rating").hidden = false;
+}
+
+/* Mobile menu */
+var mt = document.getElementById("menuToggle"), mm = document.getElementById("mobileMenu"), mi = document.getElementById("menuIcon");
+function setMenu(open) {
+  mm.classList.toggle("open", open);
+  mt.setAttribute("aria-expanded", String(open));
+  mt.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  mi.setAttribute("d", open ? "M6 6l12 12M18 6L6 18" : "M4 7h16M4 12h16M4 17h16");
+}
+mt.addEventListener("click", function () { setMenu(!mm.classList.contains("open")); });
+mm.querySelectorAll("a.m-link").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape" && mm.classList.contains("open")) { setMenu(false); mt.focus(); } });
+
+/* Requirements tabs */
+var reqList = document.getElementById("reqList");
+var reqButtons = REQUIREMENTS.map(function (r, i) {
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "req"; b.setAttribute("role", "tab"); b.id = "req-" + r.id;
+  b.innerHTML = '<span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + r.icon + '"/></svg>' + r.title + '</span><p>' + r.text + '</p>';
+  b.addEventListener("click", function () { selectReq(i, false); });
+  b.addEventListener("keydown", function (e) {
+    var n = null;
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") n = (i + 1) % REQUIREMENTS.length;
+    if (e.key === "ArrowUp" || e.key === "ArrowLeft") n = (i - 1 + REQUIREMENTS.length) % REQUIREMENTS.length;
+    if (e.key === "Home") n = 0;
+    if (e.key === "End") n = REQUIREMENTS.length - 1;
+    if (n !== null) { e.preventDefault(); selectReq(n, true); }
+  });
+  reqList.appendChild(b); return b;
+});
+function selectReq(i, focus) {
+  var r = REQUIREMENTS[i];
+  reqButtons.forEach(function (b, j) { b.setAttribute("aria-selected", String(i === j)); b.tabIndex = i === j ? 0 : -1; });
+  document.getElementById("upTitle").textContent = r.up;
+  document.getElementById("upHint").textContent = r.hint;
+  document.getElementById("phField1").textContent = r.f1;
+  if (focus) reqButtons[i].focus();
+}
+selectReq(0, false);
+
+/* FAQ accordion (several can stay open) */
+var faqList = document.getElementById("faqList");
+FAQS.forEach(function (f, i) {
+  var open = i < 3;
+  var d = document.createElement("div"); d.className = "qa" + (open ? " open" : "");
+  d.innerHTML = '<h3 style="margin:0"><button type="button" id="q' + i + '" aria-expanded="' + open + '" aria-controls="a' + i + '"><span>' + f.q + '</span><span class="pm" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 6h8"/><path class="v" d="M6 2v8"/></svg></span></button></h3>' +
+    '<div class="ans" id="a' + i + '" role="region" aria-labelledby="q' + i + '"><div><p>' + (f.draft ? '<em>Draft</em>' : '') + f.a + '</p></div></div>';
+  var btn = d.querySelector("button");
+  btn.addEventListener("click", function () {
+    var now = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(now)); d.classList.toggle("open", now);
+  });
+  faqList.appendChild(d);
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
